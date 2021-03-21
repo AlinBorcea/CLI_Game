@@ -1,25 +1,29 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "question.h"
 
-int que_init(queinfo_t *info) {
+#define QUESTION_FILE_NAME "questions.que"
+
+bool que_init(queinfo *info) {
     info->infile = fopen(QUESTION_FILE_NAME, "r");
     if (info->infile == NULL) {
         fprintf(stderr, "Error opening questions\n");
-        return 2;
+        return true;
     }
-    return EXIT_SUCCESS;
+    return false;
 }
 
-void que_close(queinfo_t *info) {
-    fclose(info->infile);
+void que_close(queinfo *info) {
+    if (info->infile != NULL)
+        fclose(info->infile);
 }
 
-int que_read(queinfo_t *info) {
-    if (feof(info->infile)) {
-        return 3;
+bool que_read(queinfo *info) {
+    if (info->infile == NULL) {
+        return true;
     }
     
     fscanf(info->infile, "%s", info->question.sentence);
@@ -29,10 +33,10 @@ int que_read(queinfo_t *info) {
     fscanf(info->infile, "%s", info->question.answears[3]);
     fscanf(info->infile, "%s", info->question.solutions);
 
-    return EXIT_SUCCESS;
+    return false;
 }
 
-void que_print(que_t *que) {
+void que_print(que *que) {
     for (int i = 0; i < strlen(que->sentence); i++) {
         if (que->sentence[i] == '_')
             printf(" ");

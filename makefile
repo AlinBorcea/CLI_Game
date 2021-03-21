@@ -1,8 +1,8 @@
 cc = gcc
 cflags = -std=c17 -pedantic -Wall -g
 
-game.exe: game.o score.o question.o
-	$(cc) $(cflags) -o game.exe game.o score.o question.o
+game.sh: *.o
+	$(cc) $(cflags) -o game.sh *.o
 
 game.o: game.c score/score.h
 	$(cc) $(cflags) -c game.c

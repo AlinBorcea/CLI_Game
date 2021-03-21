@@ -1,41 +1,39 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "score.h"
 
-typedef struct score {
-    int id;
-    char name[32];
-    int score;
-    char date[32];
-} score_t;
+#define CLEAR() system("clear")
 
-void read_score(FILE *file, score_t *score) {
+#define SCORE_FILE_NAME "leaderboard.lb"
+
+void read_score(FILE *file, score *score) {
     fscanf(file, "%d%s%d%s", &score->id, score->name, &score->score, score->date);
 }
 
-void print_score(score_t *score) {
+void print_score(FILE *outfile, score *score) {
     printf("%d %s %d ", score->id, score->name, score->score);
     for (int i = 0; i < strlen(score->date); i++) {
         if (score->date[i] == '_')
-            printf(" ");
+            fprintf(outfile, " ");
         else
-            printf("%c", score->date[i]);
+            fprintf(outfile, "%c", score->date[i]);
     }
     printf("\n\n");
 }
 
-int score_display() {
+bool score_display() {
     FILE *scorefile;
-    score_t score;
+    score score;
     char buffer[32];
-    system("cls");
+    CLEAR();
 
     scorefile = fopen(SCORE_FILE_NAME, "r");
     if (scorefile == NULL) {
         fprintf(stderr, "Error opening leaderboard!\n");
-        return 1;
+        return true;
     }
 
     fscanf(scorefile, "%s", score.name);
@@ -50,20 +48,32 @@ int score_display() {
         while (!feof(scorefile)) {
             read_score(scorefile, &score);
             if (strcmp(score.name, buffer) == 0) {
-                print_score(&score);
+                print_score(stdout, &score);
             }
         }
 
     } else {
         while (!feof(scorefile)) {
             read_score(scorefile, &score);
-            print_score(&score);
+            print_score(stdout, &score);
         }
     }
     
     fclose(scorefile);
-    printf("\nEnter any key to continue...");
+    printf("\nEnter a character to continue...");
     scanf("%s", buffer);
-    system("cls");
-    return EXIT_SUCCESS;
+    CLEAR();
+    return false;
+}
+
+bool score_append(score *score) {
+    FILE *fp = fopen(SCORE_FILE_NAME, "a");
+    if (fp == NULL) {
+        fprintf(stderr, "Leaderboard could not be opened!");
+        return true;
+    }
+
+    print_score(fp, score);
+    fclose(fp);
+    return false;
 }
