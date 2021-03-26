@@ -8,6 +8,7 @@
 #define QUESTION_FILE_NAME "questions.que"
 
 bool que_init(queinfo *info) {
+    if (info == NULL) return true;
     info->infile = fopen(QUESTION_FILE_NAME, "r");
     if (info->infile == NULL) {
         fprintf(stderr, "Error opening questions\n");
@@ -17,12 +18,12 @@ bool que_init(queinfo *info) {
 }
 
 void que_close(queinfo *info) {
-    if (info->infile != NULL)
+    if (info != NULL && info->infile != NULL)
         fclose(info->infile);
 }
 
 bool que_read(queinfo *info) {
-    if (info->infile == NULL) {
+    if (info == NULL || info->infile == NULL) {
         return true;
     }
     
@@ -37,6 +38,8 @@ bool que_read(queinfo *info) {
 }
 
 void que_print(que *que) {
+    if (que == NULL) return;
+
     for (int i = 0; i < strlen(que->sentence); i++) {
         if (que->sentence[i] == '_')
             printf(" ");

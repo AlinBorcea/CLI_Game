@@ -21,7 +21,7 @@ void print_score(FILE *outfile, score *score) {
         else
             fprintf(outfile, "%c", score->date[i]);
     }
-    printf("\n\n");
+    fprintf(outfile, "\n");
 }
 
 bool score_display() {
@@ -35,11 +35,6 @@ bool score_display() {
         fprintf(stderr, "Error opening leaderboard!\n");
         return true;
     }
-
-    fscanf(scorefile, "%s", score.name);
-    fscanf(scorefile, "%s", score.name);
-    fscanf(scorefile, "%s", score.name);
-    fscanf(scorefile, "%s", score.name);
     
     printf("Enter a name to search for or '.' to print the entire leaderboard...\n");
     scanf("%s", buffer);
