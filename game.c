@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <time.h>
 
 #include "score/score.h"
 #include "question/question.h"
@@ -43,7 +44,7 @@ int run() {
             err = score_display();
         
         } else if (strcmp(option, OPTION_START) == 0) {
-            printf("Start\n");
+            err = quiz_start();
             
         } else {
             printf("Option '%s' does not exist\n", option);
@@ -62,5 +63,6 @@ int run() {
 
 int main() {
     CLEAR();
+    srandom(time(NULL));
     return run();
 }
