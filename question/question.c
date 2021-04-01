@@ -73,7 +73,7 @@ void quiz_ask(que *que) {
     char option;
     
     que_print(que);
-
+    
 }
 
 bool read_questions() {
@@ -103,7 +103,6 @@ bool quiz_start() {
     }
 
     for (int i = 0; i < QUESTION_COUNT; i++) {
-        x = 0;
         do {
             x = rand() % QUESTION_COUNT;
         } while (que_was_answeared[x]);

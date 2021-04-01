@@ -14,7 +14,7 @@ void read_score(FILE *file, score *score) {
 }
 
 void print_score(FILE *outfile, score *score) {
-    printf("%d %s %d ", score->id, score->name, score->score);
+    fprintf(outfile, "%d %s %d ", score->id, score->name, score->score);
     for (int i = 0; i < strlen(score->date); i++) {
         if (score->date[i] == '_')
             fprintf(outfile, " ");
@@ -68,7 +68,7 @@ bool score_append(score *score) {
         return true;
     }
 
-    print_score(fp, score);
+    print_score(fp, score);    
     fclose(fp);
     return false;
 }
