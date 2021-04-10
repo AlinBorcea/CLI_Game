@@ -2,8 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <time.h>
 
 #include "question.h"
+#include "../score/score.h"
 
 #define QUESTION_FILE_NAME "questions.que"
 
@@ -69,11 +71,14 @@ void que_print(que *que) {
 
 }
 
-void quiz_ask(que *que) {
-    char option;
-    
+void quiz_ask(que *que) {    
     que_print(que);
-    
+}
+
+void create_date(struct tm *timeinfo, char *buffer) {
+    sprintf(buffer, "%d:%d_%d_%d_%d", timeinfo->tm_hour, timeinfo->tm_min,
+    timeinfo->tm_mday, timeinfo->tm_mon, (timeinfo->tm_year + 1900)); 
+    // tm_year is the number of years since 1900 on Posix systems.
 }
 
 bool read_questions() {
@@ -94,6 +99,7 @@ bool read_questions() {
 
 bool quiz_start() {
     bool que_was_answeared[QUESTION_COUNT] = {false};
+    score user_score;
     int x;
 
     if (!is_init) {
@@ -110,6 +116,20 @@ bool quiz_start() {
         que_was_answeared[x] = true;
         quiz_ask(&que_array[x]);
     }
+
+    CLEAR();
+    printf("Game over\n");
+    printf("User name...");
+    scanf("%s", user_score.name);
+
+    time_t now = time(NULL);
+    struct tm *timeinfo;
+
+    time(&now);
+    timeinfo = localtime(&now);
+    
+    create_date(timeinfo, user_score.date);
+    score_append(&user_score);
 
     return false;
 }

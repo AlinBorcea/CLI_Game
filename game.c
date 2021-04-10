@@ -63,6 +63,6 @@ int run() {
 
 int main() {
     CLEAR();
-    srandom(time(NULL));
+    srand(time(NULL));
     return run();
 }

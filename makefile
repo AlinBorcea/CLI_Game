@@ -8,7 +8,7 @@ game: $(OBJS) game.c
 game.o: game.c question/question.h score/score.h
 	$(CC) $(CFLAGS) -c game.c
 
-question.o: question/question.c question/question.h
+question.o: question/question.c question/question.h score/score.h
 	$(CC) $(CFLAGS) -c question/question.c
 
 score.o: score/score.c score/score.h

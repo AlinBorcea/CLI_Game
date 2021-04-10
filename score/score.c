@@ -13,10 +13,10 @@ void read_score(FILE *file, score *score) {
     fscanf(file, "%d%s%d%s", &score->id, score->name, &score->score, score->date);
 }
 
-void print_score(FILE *outfile, score *score) {
+void print_score(FILE *outfile, score *score, bool is_spaceunder) {
     fprintf(outfile, "%d %s %d ", score->id, score->name, score->score);
     for (int i = 0; i < strlen(score->date); i++) {
-        if (score->date[i] == '_')
+        if (is_spaceunder && score->date[i] == '_')
             fprintf(outfile, " ");
         else
             fprintf(outfile, "%c", score->date[i]);
@@ -43,14 +43,14 @@ bool score_display() {
         while (!feof(scorefile)) {
             read_score(scorefile, &score);
             if (strcmp(score.name, buffer) == 0) {
-                print_score(stdout, &score);
+                print_score(stdout, &score, true);
             }
         }
 
     } else {
         while (!feof(scorefile)) {
             read_score(scorefile, &score);
-            print_score(stdout, &score);
+            print_score(stdout, &score, true);
         }
     }
     
@@ -68,7 +68,7 @@ bool score_append(score *score) {
         return true;
     }
 
-    print_score(fp, score);    
+    print_score(fp, score, false);    
     fclose(fp);
     return false;
 }
