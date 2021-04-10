@@ -1,19 +1,20 @@
 #ifndef SCORE_H
 #define SCORE_H
 
-typedef struct {
-    int id;
-    char name[32];
-    int score;
-    char date[32];
-} score;
+#define SCORE_FILE_NAME "leaderboard.lb"
+
+typedef struct score score; 
+
+score *score_new(int id, char *name, int score, char *date);
+
+void score_delete(score **sc);
 
 /// Displays the leaderboard or the scores obtained by one person depending on user input.
-/// Return value: false if no errors were encountered or true if errors were encountered.
-bool score_display();
+/// Return value: 1 if errors were encountered else 0.
+int score_display();
 
 /// Appends the new score to the leaderboard.
 /// Return value: true if the leaderboard could not be opened.
-bool score_append(score *score);
+int score_append(score *score);
 
 #endif

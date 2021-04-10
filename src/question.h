@@ -1,28 +1,27 @@
 #ifndef QUESTION_H
 #define QUESTION_H
 
-typedef struct {
-    char sentence[128];
-    char answears[4][16];
-    char solutions[4];
-} que;
+#define QUESTION_FILE_NAME "questions.que"
+#define QUESTION_COUNT 5
 
-/// Initializes the file pointer
-/// Return value: true if the questions file could not be opened, false otherwise.
-bool que_init();
+typedef struct question que; 
 
-/// Closes the file if it is opened.
-/// If the file pointer is NULL, nothing happens.
+/// Initializes the module
+/// Return value: 1 if there were errors else 0.
+int que_init();
+
+/// Closes the module
+/// Call when the module is not needed anymore.
 void que_close();
 
 /// Reads the next question.
 /// Return value: true if the file pointer is NULL.
-bool que_read(que *q);
+int que_read(que *q);
 
 /// Prints the question and its possible answears.
 /// It does not print the correct answear.
-void que_print(que *que);
+int que_print(que *que);
 
-bool quiz_start();
+int quiz_start();
 
 #endif
