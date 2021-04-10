@@ -4,8 +4,8 @@
 #include <stdbool.h>
 #include <time.h>
 
-#include "score/score.h"
-#include "question/question.h"
+#include "score.h"
+#include "question.h"
 
 #define CLEAR() system("clear")
 

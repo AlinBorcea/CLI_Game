@@ -1,15 +1,19 @@
-CC = gcc
-CFLAGS = -std=c17 -pedantic -Wall -g
-OBJS = game.o score.o question.o
+CC=gcc
+CFLAGS=-std=c17 -pedantic -Wall -g
+SRC=src
+OBJ=obj
+SRCS=$(wildcard $(SRC)/*.c)
+OBJS=$(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SRCS))
+BINDIR=bin
+BIN=$(BINDIR)/main
 
-game: $(OBJS) game.c
-	$(CC) $(CFLAGS) $(OBJS) -o game 
+all: $(BIN)
 
-game.o: game.c question/question.h score/score.h
-	$(CC) $(CFLAGS) -c game.c
+$(BIN): $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o $@
 
-question.o: question/question.c question/question.h score/score.h
-	$(CC) $(CFLAGS) -c question/question.c
+$(OBJ)/%.o: $(SRC)/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
-score.o: score/score.c score/score.h
-	$(CC) $(CFLAGS) -c score/score.c
+clean:
+	rm -r $(OBJ)/*.o $(BIN)

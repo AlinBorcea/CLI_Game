@@ -5,7 +5,7 @@
 #include <time.h>
 
 #include "question.h"
-#include "../score/score.h"
+#include "score.h"
 
 #define QUESTION_FILE_NAME "questions.que"
 
