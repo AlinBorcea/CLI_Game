@@ -21,10 +21,6 @@ int read_questions() {
     int x = 0;
     int count = 0;
 
-    if ((x = que_init())) {
-        return x;
-    }
-
     while (count < QUESTION_COUNT && que_read(que_array + count)) {
         count++;
     }
@@ -83,8 +79,56 @@ int que_print(que *que) {
     return 0;
 }
 
-void quiz_ask(que *que) {    
+void cut_two_questions(que *que) {
+    int x, y;
+    int sol;
+
+    for (int i = 0; i < 4; i++) {
+        if (que->solutions[i] == '1') {
+            sol = i;
+            break;
+        } 
+    }
+
+    do {
+        x = rand() % 4;
+        y = rand() % 4;
+
+    } while (x != sol && y != sol);
+
+    for (int i = 0; i < 4; i++) {
+        if (i == x || i == y) {
+            strcpy(que->answears[i], QUESTION_EMPTY);
+        }
+    }
+}
+
+float quiz_ask(que *que, float modifier) {
+    int opt;
+
     que_print(que);
+    printf("Enter a number outside [1, 4] to cut two random questions\n");
+
+    while (1) {
+        printf("Choose option... ");
+        scanf("%d", &opt);
+
+        if (opt <= 0 || opt >= 5) {
+            if (modifier != 0.5) {
+                cut_two_questions(que);
+                return quiz_ask(que, 0.5F);
+            } else {
+                return 0.0F;
+            }
+        }
+
+        if (que->solutions[opt - 1] == '1') {
+            return 1.0F * modifier;
+        } else {
+            return 0.0F;
+        }
+    }
+
 }
 
 void create_date(struct tm *timeinfo, char *buffer) {
@@ -99,6 +143,10 @@ int quiz_start() {
     char buffer[32];
     char name[32];
     int x;
+    float total_score = 0.0F;
+    float question_score;
+
+    que_init();
 
     for (int i = 0; i < QUESTION_COUNT; i++) {
         do {
@@ -106,10 +154,14 @@ int quiz_start() {
         } while (que_was_answeared[x]);
 
         que_was_answeared[x] = 1;
-        quiz_ask(&que_array[x]);
+        question_score = quiz_ask(que_array + x, 1.0F);
+        CLEAR();
+
+        if (question_score == 0.0F) break;
+
+        total_score += question_score;
     }
 
-    CLEAR();
     printf("Game over\n");
     printf("User name...");
     scanf("%s", name);
@@ -120,10 +172,11 @@ int quiz_start() {
     time(&now);
     timeinfo = localtime(&now);
     create_date(timeinfo, buffer);
-    sc = score_new(0, name, 10, buffer);
+    sc = score_new(0, name, total_score, buffer);
 
     score_append(sc);
     score_delete(&sc);
+    CLEAR();
 
     return 0;
 }

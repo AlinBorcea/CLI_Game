@@ -3,6 +3,7 @@
 
 #define QUESTION_FILE_NAME "questions.que"
 #define QUESTION_COUNT 5
+#define QUESTION_EMPTY ""
 
 typedef struct question que; 
 
