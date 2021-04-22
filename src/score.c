@@ -8,16 +8,16 @@
 typedef struct score { 
     int id;
     char name[32];
-    int score;
+    float score;
     char date[32];
 } score;
 
 void read_score(FILE *file, score *score) {
-    fscanf(file, "%d%s%d%s", &score->id, score->name, &score->score, score->date);
+    fscanf(file, "%d%s%f%s", &score->id, score->name, &score->score, score->date);
 }
 
 void print_score(FILE *outfile, score *score, int is_spaceunder) {
-    fprintf(outfile, "%d %s %d ", score->id, score->name, score->score);
+    fprintf(outfile, "%d %s %f ", score->id, score->name, score->score);
     for (int i = 0; i < strlen(score->date); i++) {
         if (is_spaceunder && score->date[i] == '_')
             fprintf(outfile, " ");
@@ -71,16 +71,18 @@ int score_append(score *score) {
     return 0;
 }
 
-score *score_new(int id, char *name, int score_int, char *date) {
+score *score_new(int id, char *name, float score_float, char *date) {
     score *sc = (score*) malloc(sizeof(score));
     sc->id = id;
-    sc->score = score_int;
+    sc->score = score_float;
     strcpy(sc->name, name);
     strcpy(sc->date, date);
     return sc;
 }
 
 void score_delete(score **sc) {
-    free(*sc);
-    *sc = NULL;
+    if (*sc != NULL) {
+        free(*sc);
+        *sc = NULL;
+    }
 }

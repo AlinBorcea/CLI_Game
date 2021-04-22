@@ -25,7 +25,6 @@ int read_questions() {
         count++;
     }
 
-    que_close();
     return x;
 }
 
@@ -35,7 +34,7 @@ int que_init() {
     que_close();
     infile = fopen(QUESTION_FILE_NAME, "r");
     if (infile == NULL) {
-        fprintf(stderr, "Error opening questions\n");
+        fprintf(stderr, "Error opening questions.que\n");
         return 1;
     }
 
@@ -94,7 +93,7 @@ void cut_two_questions(que *que) {
         x = rand() % 4;
         y = rand() % 4;
 
-    } while (x != sol && y != sol);
+    } while ((x == sol || y == sol) && x != y);
 
     for (int i = 0; i < 4; i++) {
         if (i == x || i == y) {
@@ -108,6 +107,7 @@ float quiz_ask(que *que, float modifier) {
 
     que_print(que);
     printf("Enter a number outside [1, 4] to cut two random questions\n");
+    fflush(stdin);
 
     while (1) {
         printf("Choose option... ");
@@ -115,6 +115,7 @@ float quiz_ask(que *que, float modifier) {
 
         if (opt <= 0 || opt >= 5) {
             if (modifier != 0.5) {
+                is_init = 0;
                 cut_two_questions(que);
                 return quiz_ask(que, 0.5F);
             } else {
@@ -131,8 +132,8 @@ float quiz_ask(que *que, float modifier) {
 
 }
 
-void create_date(struct tm *timeinfo, char *buffer) {
-    sprintf(buffer, "%d:%d_%d_%d_%d", timeinfo->tm_hour, timeinfo->tm_min,
+int create_date(struct tm *timeinfo, char *buffer) {
+    return sprintf(buffer, "%d:%d_%d_%d_%d", timeinfo->tm_hour, timeinfo->tm_min,
     timeinfo->tm_mday, timeinfo->tm_mon, (timeinfo->tm_year + 1900)); 
     // tm_year is the number of years since 1900 on Posix systems.
 }
@@ -146,7 +147,7 @@ int quiz_start() {
     float total_score = 0.0F;
     float question_score;
 
-    que_init();
+    if (!is_init) que_init();
 
     for (int i = 0; i < QUESTION_COUNT; i++) {
         do {
@@ -171,8 +172,10 @@ int quiz_start() {
 
     time(&now);
     timeinfo = localtime(&now);
-    create_date(timeinfo, buffer);
-    sc = score_new(0, name, total_score, buffer);
+    if ((x = create_date(timeinfo, buffer)) > 0)
+        sc = score_new(0, name, total_score, buffer);
+    else
+        sc = score_new(0, name, total_score, "Unoptainable");
 
     score_append(sc);
     score_delete(&sc);

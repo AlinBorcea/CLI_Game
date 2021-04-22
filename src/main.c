@@ -1,3 +1,5 @@
+#ifdef __unix__
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,6 +8,8 @@
 #include "utils.h"
 #include "score.h"
 #include "question.h"
+
+#endif
 
 int run() {
     int err = 0;

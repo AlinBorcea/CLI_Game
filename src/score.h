@@ -5,7 +5,7 @@
 
 typedef struct score score; 
 
-score *score_new(int id, char *name, int score, char *date);
+score *score_new(int id, char *name, float score_float, char *date);
 
 void score_delete(score **sc);
 
